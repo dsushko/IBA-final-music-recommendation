@@ -1,0 +1,127 @@
+<html>
+    <title>
+
+    </title>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
+        <link rel='stylesheet' href='../static/css/style.css'>
+    </head>
+    <body style="margin: 0; display: flex; flex-direction: row;">
+        <a href="{{ url_for('logout')}}">
+            Logout
+        </a>
+        <div style='width: 450px; height:100%; background-color: white; display: flex; align-items: center; justify-content: center'>
+            <div style='margin: auto; height: 70%; width: 450px; padding: 10px; background-color: white; font-family: Open Sans; justify-content: center;'>
+                <div id='choose-header-section' style="font-size: 45px; margin-top:100px;">
+                    Выберите любимые жанры
+                </div>
+                <div id='choose-descr-section' style="font-size: 20px; margin-top:10px;">
+                    Это поможет получить более точные и вкусные рекомендации
+                </div>
+                <div>
+                    <button id='goto-artists-like' class='yellow-button'>
+                        Далее
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id='cards-choose-placeholder'>
+            <div id='genre-cards' style='width: auto;font-family: sans-serif; display: flex; justify-content: center; flex-wrap: wrap; overflow:auto; height: 100%;'>
+                
+            </div>
+            <div id='artist-cards' style='width: auto;font-family: sans-serif; justify-content: center; flex-wrap: wrap; display: none; overflow:auto; height: 100%;'>
+
+            </div>
+        </div>
+    </body>
+    <script rel="javascript" type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <script rel="javascript" type="text/javascript" src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <script rel="javascript" type="text/javascript" href="../static/js/jquery-1.11.3.min.js">
+        let selected_genres_arr_like = []
+        let selected_artists_arr_like = []
+
+        let step = 1
+        
+        document.getElementById('goto-artists-like').addEventListener('click', function(){
+            document.getElementById('choose-header-section').innerText = 'Выберите любимых исполнителей';
+            if(step == 1){
+                step++;
+                document.getElementById('genre-cards').style.display = 'none'
+                document.getElementById('artist-cards').style.display = 'flex'
+                console.log(selected_genres_arr_like)
+                $.ajax({
+                        type: 'GET',
+                        url: '/get_artists',
+                        data: {
+                            'genres_lst' : JSON.stringify(selected_genres_arr_like)
+                        }
+                    }).done(ans=>{
+                        ans.artists.forEach(element=>{
+                            document.getElementById('artist-cards').innerHTML += "<div class='choice-card' id='"+ element.artist +"'>"
+                            +"<img src='../static/artists_cover_pictures/"+ element.picture +"' class='round-picture-100'>"
+                            +"<div class='text-center-mt-10'>"
+                            +"    <a>"+ element.artist +"</a>"
+                            +"</div>"
+                            +"</div>"
+                        })
+                        active_buttons()
+                    })
+            } else
+            if(step == 2){
+                $.ajax({
+                    type: 'GET',
+                    url: '/save_preferences',
+                    data: {
+                        genres_lst : JSON.stringify(selected_genres_arr_like),
+                        artists_lst : JSON.stringify(selected_artists_arr_like)
+                    }
+                }).done(ans=>{
+                    window.location.replace('/model');
+                })
+            }
+        })
+
+        window.onload = function(){
+            $.ajax({
+                type: 'GET',
+                url: '/get_genres'
+            }).done(function(result){   
+                result.genres.forEach(element=>{
+                    document.getElementById('genre-cards').innerHTML += "<div class='choice-card' id='"+ element.genre +"'>"
+                    +"<img src='../static/genres_cover_pictires/"+ element.picture +"' class='round-picture-100'>"
+                    +"<div class='text-center-mt-10'>"
+                    +"    <a>"+ element.rus +"</a>"
+                    +"</div>"
+                    +"</div>"
+                })
+                active_buttons()
+            })
+        }
+        function active_buttons(){
+            document.querySelectorAll('.choice-card').forEach(function(card){
+                card.addEventListener('click', function(){
+                    if(!this.classList.contains('choice-activated')){
+                        this.classList.add('choice-activated')
+                        if(step == 1){
+                            selected_genres_arr_like.push(this.id)
+                        } else if(step == 2){
+                            selected_artists_arr_like.push(this.id)
+                        }
+                    } else {
+                        this.classList.remove('choice-activated')
+                        if(step == 1){
+                            const index = selected_genres_arr_like.indexOf(this.id);
+                            selected_genres_arr_like.splice(index, 1)
+                        }
+                        if(step == 2){
+                            const index = selected_artists_arr_like.indexOf(this.id);
+                            selected_artists_arr_like.splice(index, 1)
+                        }
+                    }
+                })
+            })
+        }
+    </script>
+</html>

@@ -1,0 +1,36 @@
+<html>
+    <title>
+
+    </title>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
+        <link rel='stylesheet' href='static/css/style.css'>
+    </head>
+    <body style="background-image: url('static/background_login.jpg'); background-repeat: no-repeat; background-size: cover; display:flex; justify-content: center; align-items: center;">
+        <div style="width: 500px; background-color: white; border-radius: 0px;">
+            <div style="font-family: Open Sans; font-size: 30px; text-align: center; margin: 30px;">
+                Войдите в аккаунт
+            </div>
+            <div style="display: flex; align-items: center; flex-direction: column;">
+                <form style="text-align: center;" method="POST" action="{{ url_for('login') }}">
+                    <div style="width: 100%;">
+                        <div style="font-size: 15px; text-align: start; font-family: Open Sans;">
+                            Логин:
+                        </div>
+                        <input id='login' name='login' class="yellow-input"/>
+                        <div style="font-size: 15px; text-align: start; font-family: Open Sans;">
+                            Пароль:
+                        </div>
+                        <input id='pass' name='pass' class="yellow-input" type="password"/>
+                        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
+                    </div>
+                    <button type='submit' class="yellow-button">Войти</button>
+                </form>
+                <div style="font-family: Open Sans; font-size: 15px; margin-bottom: 20px;">
+                    Нет аккаунта? 
+                    <a href="{{ url_for('register') }}" style="color: red">Зарегистрироваться</href>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

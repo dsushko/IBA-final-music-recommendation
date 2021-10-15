@@ -1,0 +1,130 @@
+<html>
+    <title>
+
+    </title>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
+        <link rel='stylesheet' href='../static/css/style.css'>
+    </head>
+    <body>
+        <div style="display: flex;">
+            <div class='halfscr-col' style="display: flex; flex-direction: column;align-items: center;">
+                <div>
+                    <input id='find-input-area' type="search" style="width:500px; height: 40px" name="q" placeholder="Ищите песни...">
+                    <button id='find-songs'>Искать</button>
+                </div>
+                <div id='dropdown' style='position: absolute; width: 500px; top:7%; overflow: auto; display: block;'>
+                    <div id='search-results' style="display:none; width: 95%; height: 350px;border:1px solid black; background-color: white;">
+
+                    </div>
+                </div>
+                <div id='chosen-tracks' style='margin: 25px; border: 1px solid black; width:500px; height:400px; overflow: auto;'>
+
+                </div>
+                <button id='get-recommendations' class='yellow-button' style="margin-top: 0px; text-align: center;">
+                    Что послушать ещё?
+                </button>
+                <div style="font-family: Open Sans">
+                    или
+                </div>
+                <form action="/">
+                    <button class='yellow-button' style="margin-top: 10px; margin-bottom: 0px; text-align: center;">
+                        Поменять предпочтения
+                    </button>
+                </form>
+                <a style="font-family: Open Sans" href="/logout"> Выйти</a>
+            </div>
+            <div id='tracks-recommended' style="height: 600px; overflow: auto;" class='halfscr-col'>
+                <div style='width:100px; height:100px; background-color: white;'>
+
+                </div>
+            </div>
+        </div>      
+    </body>
+    <script rel="javascript" type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script rel="javascript" type="text/javascript" src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script rel="javascript" type="text/javascript" href="../static/js/jquery-1.11.3.min.js">
+        songs_like_arr = []
+        document.getElementById('find-songs').addEventListener('click', () => {
+            document.getElementById('search-results').innerHTML = ''
+            $.ajax({
+                url: '/tracks_search',
+                type: 'GET',
+                data: {
+                    query: document.getElementById('find-input-area').value
+                }
+            }).done(res=>{
+                document.getElementById('search-results').style.display = 'block'
+                res.results.forEach(track=>{
+                    document.getElementById('search-results').innerHTML += 
+                    "<div id='"+ track.track_id +"' data-artistid='"+ track.artist_id +"' class='search-res'>" 
+                            + track.artist + " - " + track.title
+                        + "</div>"
+                })
+                activate_results()
+                console.log(res)
+            })
+        })
+
+        function song_version(version){
+            if(version == 'None'){
+                return ''
+            } else {
+                return version
+            }
+        }
+        function seconds_to_str(secs){
+            if(secs < 10){
+                return '0'+ String(secs)
+            }
+            else return String(secs)
+        }
+
+        document.getElementById('get-recommendations').addEventListener('click', () => {
+            $.ajax({
+                url: '/get_recommendations',
+                type:'GET',
+                data: {
+                    tracks: JSON.stringify(songs_like_arr)
+                }
+            }).done(res => {
+                document.getElementById('tracks-recommended').innerHTML = ''
+                console.log(res)
+                res.tracks.forEach(track=>{
+                    document.getElementById('tracks-recommended').innerHTML += 
+                    "<div class='track-box' style='display: flex; flex-direction: row; align-items: center;'>"
+                        +"<img src='../static/artists_cover_pictures/"+ track.artist_id +".jpg' style='height: 60px; width: 60px;'>"
+                        +"<div style='width: 80%; margin-left: 10px; font-family: Open Sans;'>"
+                            +"<div>"
+                                +"<a style='color: black; text-decoration: none;' href='https://music.yandex.by/album/" + track.album_id + "/track/" + track.track_id + "'>"+ track.title +"</a>"
+                                +"<a style='color: rgb(116, 116, 116); margin-left:5px;'>"+ song_version(track.song_version)+"</a>"
+                            +"</div>"
+                            +"<div style='color: rgb(116, 116, 116)'>"+ track.artist +"</div>"
+                        +"</div>"
+                        +"<div style='font-family: Open Sans; text-align: center;'>"
+                        + String(Math.floor(Number(track.duration)/60000)) + ':' + seconds_to_str(Math.floor(Number(track.duration)/100) % 60)
+                        +"</div>"
+                    +"</div>"
+                })
+            })
+        })
+
+        function activate_results(){
+            document.querySelectorAll('.search-res').forEach(function(card){
+                card.addEventListener('click', function(){
+                    document.getElementById('search-results').style.display = 'none'
+                    songs_like_arr.push(this.id)
+                    name = this.innerHTML
+                    document.getElementById('chosen-tracks').innerHTML += 
+                    "<div style='display: flex; flex-direction: row; align-items: center;'>"                 
+                    +"<img src='../static/artists_cover_pictures/"+ document.getElementById(String(this.id)).dataset.artistid +".jpg' style='height: 60px; width: 60px;'>"
+                    +"<div style='width: 80%; margin-left: 10px; font-family: Open Sans;'>"
+                        +"<div>"
+                            + name
+                    +"</div>"
+                +"</div>"
+                })
+            })
+        }
+    </script>
+</html>

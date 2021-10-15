@@ -1,0 +1,88 @@
+.yellow-button{
+    background-color:#ffdd1d;
+    border: none; 
+    margin: 30px;
+    margin-bottom: 5px;
+    width: 275px;
+    height: 50px; 
+    border-radius: 25px; 
+    text-align: center; 
+    font-family: 'Open Sans';
+}
+.yellow-button:hover{
+    background-color: #ecce1f;
+}
+.choice-card{
+    width: 130px;
+    height: 130px;
+    min-width: 130px;
+    min-height: 130px;
+    padding: 10px 10px 10px 10px;
+    margin: 5px 5px 5px 5px;
+    background-color: white;
+    text-align: center; 
+    font-family: 'Open Sans'; 
+    font-size: 15px;
+}
+.choice-card:hover{
+    background-color: #dddddd;
+}
+.choice-activated{
+    background-color: #ffdd1d;
+}
+.yellow-input{
+    width: 300px; 
+    height: 45px; 
+    font-size: 15px; 
+    border-width: 4px; 
+    border-color: #ffdd1d; 
+    border-style: solid; 
+    margin: 10px;
+    font-family: 'Open Sans';
+}
+
+.round-picture-100{
+    width: 100px; 
+    height: 100px; 
+    border-radius: 50%;
+}
+
+.text-center-mt-10{
+    text-align: center; 
+    margin-top: 10px;
+}
+
+.track-box{
+    width: 600px; 
+    height: 60px; 
+    padding: 7px; 
+    margin-top: 3px;
+    border-width: 0;
+    border: 2px solid transparent;
+}
+
+.track-box:hover{
+    border-width: 3px;
+    border: 2px solid #ffdd1d;
+}
+
+.halfscr-col{
+    width: 50%; 
+    height: 100%;
+}
+
+.search-res{
+    height: 30px; 
+    margin-left: 10px;
+    height: 30px;
+    margin: 3px; 
+    font-family: 'Open Sans'; 
+    text-align: center;
+}
+
+.search-res:hover{
+    background-color: #dddddd;
+}
+
+
+input {outline:none;}

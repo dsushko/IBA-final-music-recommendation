@@ -1,0 +1,43 @@
+<html>
+    <title>
+
+    </title>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
+        <link rel='stylesheet' type='text/css' href='static/css/style.css'>
+    </head>
+    <body style="background-image: url('static/background_login.jpg'); background-repeat: no-repeat; background-size: cover; display:flex; justify-content: center; align-items: center;">
+        <div style="width: 500px; background-color: white; border-radius: 0px;">
+            <div style="font-family: Open Sans; font-size: 30px; text-align: center; margin: 30px;">
+                Регистрация
+            </div>
+            <div style="display: flex; align-items: center; flex-direction: column;">
+                <form method="POST" action="{{ url_for('register') }}" style="text-align: center;">
+                    <div style="width: 100%;">
+                        <div style="font-size: 15px; text-align: start; font-family: Open Sans;">
+                            Логин:
+                        </div>
+                        <input id='login' name='login' class="yellow-input"/>
+                        <div style="font-size: 15px; text-align: start; font-family: Open Sans;">
+                            Пароль:
+                        </div>
+                        <input id='pass' name='pass' class="yellow-input" type="password"/>
+                        <div style="font-size: 15px; text-align: start; font-family: Open Sans;">
+                            Повторите пароль:
+                        </div>
+                        <input id='confirmation' name='confirmation' class="yellow-input" type="password"/>
+                    </div>
+                    <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type='submit' value="Register" class="yellow-button">Зарегистрироваться</button>
+                    {% if error == "1" %}
+                    <p class="text-danger">Такой пользователь уже существует. <a href="{{ url_for('login') }}" title="login">Войдите в аккаунт</a>, если он ваш.</p>
+                    {% endif %}
+                </form>
+                <div style="font-family: Open Sans; font-size: 15px; margin-bottom: 20px;">
+                    Есть аккаунт? 
+                    <a href="{{ url_for('login') }}" style="color: red">Войти</href>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
